@@ -1,2 +1,0 @@
-# Vivetuhistoria
-Cuenta tu historia 
