@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VYRO - Comparte. Descubre. Conecta.">
+  <title>VYRO — Comparte. Descubre. Conecta.</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ENCABEZADO -->
+
+  <header class="topbar">
+
+    <div class="topbar-inner">
+
+      <button class="logo" onclick="irA('inicio')">
+        VYRO<span>•</span>
+      </button>
+
+      <div class="buscador">
+        <span>⌕</span>
+        <input
+          id="busqueda"
+          type="text"
+          placeholder="Buscar en VYRO..."
+          oninput="buscar()"
+        >
+      </div>
+
+      <div class="acciones-header">
+
+        <button
+          class="icon-button"
+          onclick="mostrarNotificaciones()"
+          title="Notificaciones">
+          ♡
+          <span id="contador-notificaciones" class="contador">3</span>
+        </button>
+
+        <button
+          class="icon-button"
+          onclick="mostrarMensajes()"
+          title="Mensajes">
+          ✉
+        </button>
+
+        <button
+          class="avatar pequeño"
+          onclick="irA('perfil')"
+          id="avatar-header">
+          S
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- CONTENIDO PRINCIPAL -->
+
+  <main class="layout">
+
+    <!-- MENÚ IZQUIERDO -->
+
+    <aside class="sidebar izquierda">
+
+      <nav>
+
+        <button class="nav-item activo" onclick="irA('inicio')" data-seccion="inicio">
+          <span>⌂</span>
+          <strong>Inicio</strong>
+        </button>
+
+        <button class="nav-item" onclick="irA('explorar')" data-seccion="explorar">
+          <span>⌕</span>
+          <strong>Explorar</strong>
+        </button>
+
+        <button class="nav-item" onclick="irA('notificaciones')" data-seccion="notificaciones">
+          <span>♡</span>
+          <strong>Notificaciones</strong>
+        </button>
+
+        <button class="nav-item" onclick="irA('mensajes')" data-seccion="mensajes">
+          <span>✉</span>
+          <strong>Mensajes</strong>
+        </button>
+
+        <button class="nav-item" onclick="irA('perfil')" data-seccion="perfil">
+          <span>♙</span>
+          <strong>Mi perfil</strong>
+        </button>
+
+        <button class="nav-item" onclick="irA('guardados')" data-seccion="guardados">
+          <span>☆</span>
+          <strong>Guardados</strong>
+        </button>
+
+      </nav>
+
+      <button class="crear-boton" onclick="abrirPublicador()">
+        ＋ Crear publicación
+      </button>
+
+      <div class="usuario-mini">
+
+        <div class="avatar">
+          S
+        </div>
+
+        <div>
+          <strong id="nombre-mini">Snyder</strong>
+          <small>@snyder</small>
+        </div>
+
+        <button onclick="mostrarConfiguracion()">⋯</button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- FEED -->
+
+    <section class="contenido">
+
+      <!-- INICIO -->
+
+      <div id="inicio" class="seccion activa">
+
+        <div class="historias">
+
+          <div class="historia crear-historia" onclick="crearHistoria()">
+            <div class="historia-avatar">
+              ＋
+            </div>
+            <span>Tu historia</span>
+          </div>
+
+          <div class="historia">
+            <div class="historia-avatar degradado">
+              A
+            </div>
+            <span>Alex</span>
+          </div>
+
+          <div class="historia">
+            <div class="historia-avatar rosa">
+              M
+            </div>
+            <span>María</span>
+          </div>
+
+          <div class="historia">
+            <div class="historia-avatar azul">
+              J
+            </div>
+            <span>Javier</span>
+          </div>
+
+          <div class="historia">
+            <div class="historia-avatar verde">
+              L
+            </div>
+            <span>Laura</span>
+          </div>
+
+        </div>
+
+
+        <!-- CREAR PUBLICACIÓN -->
+
+        <div class="crear-post">
+
+          <div class="avatar">
+            S
+          </div>
+
+          <button onclick="abrirPublicador()" class="input-falso">
+            ¿Qué estás pensando?
+          </button>
+
+        </div>
+
+
+        <!-- PUBLICACIONES -->
+
+        <div id="feed">
+
+          <!-- PUBLICACIÓN 1 -->
+
+          <article class="post" data-text="viaje playa vacaciones naturaleza">
+
+            <div class="post-header">
+
+              <div class="avatar degradado">
+                A
+              </div>
+
+              <div class="post-user">
+                <strong>Alex Rivera</strong>
+                <span>@alexrivera · 2 h</span>
+              </div>
+
+              <button class="mas">•••</button>
+
+            </div>
+
+            <p class="post-text">
+              A veces solo necesitas desconectarte un rato,
+              mirar el horizonte y disfrutar el momento. 🌊
+            </p>
+
+            <div class="post-imagen playa">
+              <div>
+                🌅
+                <strong>Un momento para recordar</strong>
+              </div>
+            </div>
+
+            <div class="estadisticas">
+              <span>♡ 2.4 mil</span>
+              <span>186 comentarios</span>
+            </div>
+
+            <div class="acciones-post">
+
+              <button onclick="darLike(this)">
+                ♡ <span>Me gusta</span>
+              </button>
+
+              <button onclick="abrirComentarios(this)">
+                ◯ <span>Comentar</span>
+              </button>
+
+              <button onclick="compartir()">
+                ↗ <span>Compartir</span>
+              </button>
+
+              <button onclick="guardar(this)">
+                ☆
+              </button>
+
+            </div>
+
+            <div class="comentarios oculto">
+
+              <div class="comentario">
+                <div class="avatar mini">M</div>
+                <div>
+                  <strong>María</strong>
+                  <p>Qué hermoso lugar 😍</p>
+                </div>
+              </div>
+
+              <div class="escribir-comentario">
+                <input placeholder="Escribe un comentario...">
+                <button onclick="enviarComentario(this)">Enviar</button>
+              </div>
+
+            </div>
+
+          </article>
+
+
+          <!-- PUBLICACIÓN 2 -->
+
+          <article class="post" data-text="tecnologia futuro inteligencia artificial">
+
+            <div class="post-header">
+
+              <div class="avatar azul">
+                J
+              </div>
+
+              <div class="post-user">
+                <strong>Javier Torres</strong>
+                <span>@javiert · 5 h</span>
+              </div>
+
+              <button class="mas">•••</button>
+
+            </div>
+
+            <p class="post-text">
+              La tecnología cambia todos los días.
+              ¿Qué invento crees que veremos en los próximos años? 🤖
+            </p>
+
+            <div class="post-imagen tecnologia">
+              <div>
+                ⚡
+                <strong>El futuro empieza ahora</strong>
+              </div>
+            </div>
+
+            <div class="estadisticas">
+              <span>♡ 982</span>
+              <span>74 comentarios</span>
+            </div>
+
+            <div class="acciones-post">
+
+              <button onclick="darLike(this)">
+                ♡ <span>Me gusta</span>
+              </button>
+
+              <button onclick="abrirComentarios(this)">
+                ◯ <span>Comentar</span>
+              </button>
+
+              <button onclick="compartir()">
+                ↗ <span>Compartir</span>
+              </button>
+
+              <button onclick="guardar(this)">
+                ☆
+              </button>
+
+            </div>
+
+            <div class="comentarios oculto">
+
+              <div class="escribir-comentario">
+                <input placeholder="Escribe un comentario...">
+                <button onclick="enviarComentario(this)">Enviar</button>
+              </div>
+
+            </div>
+
+          </article>
+
+
+          <!-- PUBLICACIÓN 3 -->
+
+          <article class="post" data-text="musica concierto amigos diversión">
+
+            <div class="post-header">
+
+              <div class="avatar rosa">
+                M
+              </div>
+
+              <div class="post-user">
+                <strong>María López</strong>
+                <span>@marialopez · 1 d</span>
+              </div>
+
+              <button class="mas">•••</button>
+
+            </div>
+
+            <p class="post-text">
+              No hay nada mejor que música, amigos y una noche
+              que termina convirtiéndose en un recuerdo. 🎵✨
+            </p>
+
+            <div class="post-imagen musica">
+              <div>
+                🎵
+                <strong>Live your moment</strong>
+              </div>
+            </div>
+
+            <div class="estadisticas">
+              <span>♡ 1.7 mil</span>
+              <span>121 comentarios</span>
+            </div>
+
+            <div class="acciones-post">
+
+              <button onclick="darLike(this)">
+                ♡ <span>Me gusta</span>
+              </button>
+
+              <button onclick="abrirComentarios(this)">
+                ◯ <span>Comentar</span>
+              </button>
+
+              <button onclick="compartir()">
+                ↗ <span>Compartir</span>
+              </button>
+
+              <button onclick="guardar(this)">
+                ☆
+              </button>
+
+            </div>
+
+            <div class="comentarios oculto">
+
+              <div class="escribir-comentario">
+                <input placeholder="Escribe un comentario...">
+                <button onclick="enviarComentario(this)">Enviar</button>
+              </div>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </div>
+
+
+      <!-- EXPLORAR -->
+
+      <div id="explorar" class="seccion">
+
+        <div class="seccion-titulo">
+          <h1>Explorar</h1>
+          <p>Descubre contenido nuevo en VYRO.</p>
+        </div>
+
+        <div class="explorar-grid">
+
+          <div class="explorar-card grande">
+            <span>🔥</span>
+            <h2>Tendencias</h2>
+            <p>Lo que está llamando la atención ahora.</p>
+          </div>
+
+          <div class="explorar-card">
+            <span>🎮</span>
+            <h2>Gaming</h2>
+            <p>Todo sobre videojuegos.</p>
+          </div>
+
+          <div class="explorar-card">
+            <span>🎵</span>
+            <h2>Música</h2>
+            <p>Nuevos sonidos y artistas.</p>
+          </div>
+
+          <div class="explorar-card">
+            <span>🚀</span>
+            <h2>Tecnología</h2>
+            <p>El futuro está aquí.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- NOTIFICACIONES -->
+
+      <div id="notificaciones" class="seccion">
+
+        <div class="seccion-titulo">
+          <h1>Notificaciones</h1>
+          <p>Lo último que ha ocurrido.</p>
+        </div>
+
+        <div class="lista">
+
+          <div class="notificacion">
+            <div class="avatar rosa">M</div>
+            <p><strong>María</strong> indicó que le gusta tu publicación.</p>
+            <span>2 min</span>
+          </div>
+
+          <div class="notificacion">
+            <div class="avatar azul">J</div>
+            <p><strong>Javier</strong> empezó a seguirte.</p>
+            <span>15 min</span>
+          </div>
+
+          <div class="notificacion">
+            <div class="avatar verde">L</div>
+            <p><strong>Laura</strong> comentó tu publicación.</p>
+            <span>1 h</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- MENSAJES -->
+
+      <div id="mensajes" class="seccion">
+
+        <div class="seccion-titulo">
+          <h1>Mensajes</h1>
+          <p>Habla con tu comunidad.</p>
+        </div>
+
+        <div class="chat">
+
+          <div class="chat-contactos">
+
+            <div class="contacto activo">
+
+              <div class="avatar rosa">M</div>
+
+              <div>
+                <strong>María López</strong>
+                <span>Hola 👋</span>
+              </div>
+
+            </div>
+
+            <div class="contacto">
+
+              <div class="avatar azul">J</div>
+
+              <div>
+                <strong>Javier Torres</strong>
+                <span>¿Viste esto?</span>
+              </div>
+
+            </div>
+
+            <div class="contacto">
+
+              <div class="avatar verde">L</div>
+
+              <div>
+                <strong>Laura</strong>
+                <span>Nos vemos mañana</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="chat-conversacion">
+
+            <div class="chat-header">
+              <strong>María López</strong>
+              <span>En línea</span>
+            </div>
+
+            <div class="mensajes">
+
+              <div class="mensaje recibido">
+                ¡Hola! 👋
+              </div>
+
+              <div class="mensaje recibido">
+                ¿Ya viste la nueva publicación?
+              </div>
+
+              <div class="mensaje enviado">
+                ¡Sí! Está genial 🔥
+              </div>
+
+            </div>
+
+            <div class="chat-input">
+
+              <input
+                id="mensaje-input"
+                placeholder="Escribe un mensaje..."
+                onkeydown="teclaMensaje(event)"
+              >
+
+              <button onclick="enviarMensaje()">
+                ➤
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- PERFIL -->
+
+      <div id="perfil" class="seccion">
+
+        <div class="perfil-portada"></div>
+
+        <div class="perfil-info">
+
+          <div class="avatar perfil-avatar">
+            S
+          </div>
+
+          <button
+            class="editar-perfil"
+            onclick="editarPerfil()">
+            Editar perfil
+          </button>
+
+          <h1 id="perfil-nombre">Snyder</h1>
+
+          <p>@snyder</p>
+
+          <p class="bio">
+            Explorando nuevas ideas y compartiendo momentos. 🚀
+          </p>
+
+          <div class="perfil-stats">
+
+            <span>
+              <strong id="seguidores">128</strong>
+              seguidores
+            </span>
+
+            <span>
+              <strong>64</strong>
+              siguiendo
+            </span>
+
+            <span>
+              <strong id="publicaciones">12</strong>
+              publicaciones
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="perfil-tabs">
+
+          <button class="activo">Publicaciones</button>
+          <button>Me gusta</button>
+          <button>Fotos</button>
+
+        </div>
+
+      </div>
+
+
+      <!-- GUARDADOS -->
+
+      <div id="guardados" class="seccion">
+
+        <div class="seccion-titulo">
+          <h1>Guardados</h1>
+          <p>Las publicaciones que quieras conservar.</p>
+        </div>
+
+        <div id="guardados-lista" class="guardados-vacio">
+          <div>☆</div>
+          <h2>Aún no tienes publicaciones guardadas</h2>
+          <p>Cuando guardes una publicación aparecerá aquí.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- BARRA DERECHA -->
+
+    <aside class="sidebar derecha">
+
+      <div class="panel">
+
+        <h3>Tendencias para ti</h3>
+
+        <div class="tendencia">
+          <small>1 · Tecnología</small>
+          <strong>#InteligenciaArtificial</strong>
+          <span>24.8K publicaciones</span>
+        </div>
+
+        <div class="tendencia">
+          <small>2 · Música</small>
+          <strong>#NuevaMúsica</strong>
+          <span>18.2K publicaciones</span>
+        </div>
+
+        <div class="tendencia">
+          <small>3 · Gaming</small>
+          <strong>#Gaming</strong>
+          <span>15.7K publicaciones</span>
+        </div>
+
+        <button class="ver-mas">
+          Ver más
+        </button>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>Personas que quizá conozcas</h3>
+
+        <div class="sugerencia">
+
+          <div class="avatar rosa">M</div>
+
+          <div>
+            <strong>María López</strong>
+            <span>@marialopez</span>
+          </div>
+
+          <button onclick="seguir(this)">
+            Seguir
+          </button>
+
+        </div>
+
+        <div class="sugerencia">
+
+          <div class="avatar azul">J</div>
+
+          <div>
+            <strong>Javier Torres</strong>
+            <span>@javiert</span>
+          </div>
+
+          <button onclick="seguir(this)">
+            Seguir
+          </button>
+
+        </div>
+
+        <div class="sugerencia">
+
+          <div class="avatar verde">L</div>
+
+          <div>
+            <strong>Laura García</strong>
+            <span>@laurag</span>
+          </div>
+
+          <button onclick="seguir(this)">
+            Seguir
+          </button>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+
+  <!-- BOTÓN MÓVIL -->
+
+  <button class="boton-flotante" onclick="abrirPublicador()">
+    ＋
+  </button>
+
+
+  <!-- MODAL PUBLICAR -->
+
+  <div id="modal-publicar" class="modal oculto">
+
+    <div class="modal-contenido">
+
+      <div class="modal-header">
+        <h2>Crear publicación</h2>
+
+        <button onclick="cerrarModal('modal-publicar')">
+          ×
+        </button>
+      </div>
+
+      <textarea
+        id="nuevo-texto"
+        placeholder="¿Qué quieres compartir?"
+        maxlength="500">
+      </textarea>
+
+      <div class="publicador-opciones">
+
+        <button onclick="agregarFoto()">
+          🖼️ Foto
+        </button>
+
+        <button onclick="agregarVideo()">
+          🎬 Video
+        </button>
+
+        <button onclick="agregarEmoji()">
+          😊 Emoji
+        </button>
+
+      </div>
+
+      <button
+        class="publicar-boton"
+        onclick="publicar()">
+        Publicar
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- MODAL MENSAJE -->
+
+  <div id="toast" class="toast">
+    <span id="toast-text"></span>
+  </div>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>
