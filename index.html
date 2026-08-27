@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ViveTuHistoria — Comparte experiencias</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial;background:#f5f7fb;color:#172033}
+header{position:sticky;top:0;background:#ffffffee;backdrop-filter:blur(12px);border-bottom:1px solid #e7eaf0;z-index:5}
+nav{max-width:1100px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:20px}
+.logo{font-weight:900;font-size:21px;color:#6d4aff}
+.logo span{color:#172033}
+nav .links{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+button,.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer}
+.primary{background:#6d4aff;color:white}
+.ghost{background:#eef0f7;color:#263044}
+
+main{max-width:1100px;margin:auto;padding:30px 20px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center;padding:34px 0}
+.hero h1{font-size:clamp(36px,6vw,64px);line-height:.98;margin:10px 0}
+.hero p{font-size:18px;color:#657085;max-width:650px}
+
+.card{background:white;border:1px solid #e8ebf2;border-radius:20px;padding:20px;box-shadow:0 8px 28px #1b24400b}
+.heroCard{background:linear-gradient(135deg,#6d4aff,#9a7cff);color:#fff}
+.heroCard p{color:#eee}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.search{flex:1;min-width:220px;padding:13px 15px;border:1px solid #dfe3ec;border-radius:12px;background:white}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.story{display:flex;flex-direction:column;gap:10px}
+.story h3{margin:0}
+.meta{font-size:13px;color:#788398}
+.tag{display:inline-block;background:#f0edff;color:#6041d9;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.actions{display:flex;gap:7px;margin-top:auto}
+.actions button{padding:8px 10px;background:#f3f5f9}
+
+section{margin:42px 0}
+h2{font-size:30px;margin-bottom:8px}
+.muted{color:#6d778a}
+
+.form{display:grid;gap:12px}
+.form input,.form textarea,.form select{
+width:100%;padding:13px;border:1px solid #dfe3ec;border-radius:12px;font:inherit
+}
+.form textarea{min-height:150px;resize:vertical}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat strong{font-size:28px;display:block}
+
+.toast{
+position:fixed;right:18px;bottom:18px;background:#172033;color:white;
+padding:13px 16px;border-radius:12px;display:none;z-index:20
+}
+
+footer{padding:35px 20px;text-align:center;color:#7a8495}
+
+@media(max-width:800px){
+.hero{grid-template-columns:1fr}
+.grid{grid-template-columns:1fr 1fr}
+.stats{grid-template-columns:1fr 1fr}
+nav .links button:not(.primary){display:none}
+}
+
+@media(max-width:520px){
+.grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+<div class="logo">Vive<span>TuHistoria</span></div>
+
+<div class="links">
+<button class="ghost" onclick="go('explorar')">Explorar</button>
+<button class="ghost" onclick="go('publicar')">Publicar</button>
+<button class="primary" onclick="login()">Iniciar sesión</button>
+</div>
+</nav>
+</header>
+
+<main>
+
+<section class="hero">
+
+<div>
+<span class="tag">TU HISTORIA IMPORTA</span>
+
+<h1>Comparte lo que viviste. Inspira a alguien.</h1>
+
+<p>
+Un espacio para contar experiencias, descubrir historias reales
+y conectar con personas a través de lo que han vivido.
+</p>
+
+<div class="toolbar">
+<button class="primary" onclick="go('publicar')">
+✍️ Contar mi experiencia
+</button>
+
+<button class="ghost" onclick="go('explorar')">
+🔎 Explorar historias
+</button>
+</div>
+</div>
+
+<div class="card heroCard">
+<h2>🌟 Historia destacada</h2>
+<h3>“Un pequeño cambio que me ayudó a atreverme”</h3>
+
+<p>
+Las experiencias de otras personas pueden darte nuevas ideas,
+perspectivas y motivación.
+</p>
+
+<button class="ghost" onclick="alert('Historia destacada abierta')">
+Leer historia →
+</button>
+</div>
+
+</section>
+
+
+<section id="explorar">
+
+<h2>Explora experiencias</h2>
+<p class="muted">Busca por palabra o filtra por categoría.</p>
+
+<div class="toolbar">
+
+<input id="search"
+class="search"
+placeholder="🔎 Buscar experiencias..."
+oninput="render()">
+
+<select id="cat"
+class="search"
+style="max-width:220px"
+onchange="render()">
+
+<option value="">Todas las categorías</option>
+<option>Viajes</option>
+<option>Estudios</option>
+<option>Superación</option>
+<option>Familia</option>
+<option>Amistad</option>
+<option>Trabajo</option>
+<option>Otros</option>
+
+</select>
+
+<button class="ghost" onclick="sortStories()">
+🔥 Populares
+</button>
+
+</div>
+
+<div id="stories" class="grid"></div>
+
+</section>
+
+
+<section id="publicar">
+
+<h2>Publica tu experiencia</h2>
+
+<p class="muted">
+Escribe algo que quieras compartir con la comunidad.
+</p>
+
+<div class="card">
+
+<form class="form" onsubmit="publish(event)">
+
+<input
+id="title"
+required
+maxlength="80"
+placeholder="Título de tu experiencia">
+
+<select id="category" required>
+
+<option value="">Elige una categoría</option>
+<option>Viajes</option>
+<option>Estudios</option>
+<option>Superación</option>
+<option>Familia</option>
+<option>Amistad</option>
+<option>Trabajo</option>
+<option>Otros</option>
+
+</select>
+
+<textarea
+id="body"
+required
+maxlength="1200"
+placeholder="Cuenta tu experiencia..."></textarea>
+
+<input
+id="author"
+required
+maxlength="40"
+placeholder="Tu nombre o alias">
+
+<button class="primary">
+🚀 Publicar experiencia
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+
+<section>
+
+<h2>Tu comunidad</h2>
+
+<div class="stats">
+
+<div class="card stat">
+<strong id="s1">0</strong>
+<span class="muted">Historias</span>
+</div>
+
+<div class="card stat">
+<strong id="s2">0</strong>
+<span class="muted">Me gusta</span>
+</div>
+
+<div class="card stat">
+<strong>7</strong>
+<span class="muted">Categorías</span>
+</div>
+
+<div class="card stat">
+<strong>100%</strong>
+<span class="muted">Historias reales</span>
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+ViveTuHistoria · Comparte con respeto · Reporta contenido que incumpla las normas.
+</footer>
+
+<div id="toast" class="toast"></div>
+
+
+<!-- FIREBASE -->
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+getAuth,
+signInAnonymously,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+getDatabase,
+ref,
+push,
+set,
+onValue,
+update,
+remove
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+
+/* CONFIGURACIÓN DE TU PROYECTO */
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyC_lVLqr_Bj1smI-0vvRNVnjcgl1Qj-BEI",
+
+authDomain:
+"vivetuhistoria-f9d48.firebaseapp.com",
+
+databaseURL:
+"https://vivetuhistoria-f9d48-default-rtdb.firebaseio.com",
+
+projectId:
+"vivetuhistoria-f9d48",
+
+storageBucket:
+"vivetuhistoria-f9d48.firebasestorage.app",
+
+messagingSenderId:
+"610644399678",
+
+appId:
+"1:610644399678:web:57786f83b2126311fa236f"
+
+};
+
+
+/* CONECTAR FIREBASE */
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getDatabase(app);
+
+let currentUser = null;
+
+let stories = [];
+
+
+/* INICIAR USUARIO ANÓNIMO */
+
+signInAnonymously(auth)
+.catch(error => {
+
+console.error(error);
+
+toast("Error al conectar con Firebase");
+
+});
+
+
+/* CUANDO FIREBASE IDENTIFICA AL USUARIO */
+
+onAuthStateChanged(auth, user => {
+
+if(user){
+
+currentUser = user;
+
+console.log("Usuario conectado:", user.uid);
+
+cargarHistorias();
+
+}
+
+});
+
+
+/* CARGAR HISTORIAS DESDE FIREBASE */
+
+function cargarHistorias(){
+
+const storiesRef = ref(db,"stories");
+
+onValue(storiesRef,snapshot => {
+
+const data = snapshot.val() || {};
+
+stories = Object.entries(data).map(([id,s]) => ({
+
+id:id,
+...s
+
+}));
+
+render();
+
+});
+
+}
+
+
+/* MOSTRAR HISTORIAS */
+
+window.render = function(){
+
+let q =
+document.getElementById("search").value.toLowerCase();
+
+let c =
+document.getElementById("cat").value;
+
+
+let arr = stories.filter(s =>
+
+(!q ||
+(s.title + s.body + s.author)
+.toLowerCase()
+.includes(q))
+
+&&
+
+(!c || s.cat === c)
+
+);
+
+
+document.getElementById("stories").innerHTML =
+
+arr.map(s => `
+
+<article class="card story">
+
+<span class="tag">
+${esc(s.cat)}
+</span>
+
+<h3>
+${esc(s.title)}
+</h3>
+
+<p>
+${esc(s.body)}
+</p>
+
+<div class="meta">
+Por ${esc(s.author)}
+</div>
+
+<div class="actions">
+
+<button onclick="like('${s.id}')">
+❤️ ${s.likes || 0}
+</button>
+
+<button onclick="comment('${s.id}')">
+💬 ${s.comments || 0}
+</button>
+
+<button onclick="share('${s.id}')">
+↗️ Compartir
+</button>
+
+${currentUser && s.uid === currentUser.uid ? `
+
+<button onclick="deleteStory('${s.id}')">
+🗑️
+</button>
+
+` : ""}
+
+</div>
+
+</article>
+
+`).join("")
+
+||
+
+'<div class="card">
+No encontramos historias con esos criterios.
+</div>';
+
+
+document.getElementById("s1").textContent =
+stories.length;
+
+
+document.getElementById("s2").textContent =
+stories.reduce((a,s) => a + (s.likes || 0),0);
+
+};
+
+
+/* PUBLICAR */
+
+window.publish = async function(e){
+
+e.preventDefault();
+
+if(!currentUser){
+
+toast("Conectando con Firebase...");
+
+return;
+
+}
+
+
+const title =
+document.getElementById("title").value.trim();
+
+const category =
+document.getElementById("category").value;
+
+const body =
+document.getElementById("body").value.trim();
+
+const author =
+document.getElementById("author").value.trim();
+
+
+const newStoryRef = push(ref(db,"stories"));
+
+
+await set(newStoryRef,{
+
+title:title,
+
+cat:category,
+
+body:body,
+
+author:author,
+
+likes:0,
+
+comments:0,
+
+createdAt:Date.now(),
+
+uid:currentUser.uid
+
+});
+
+
+e.target.reset();
+
+toast("¡Historia guardada en Firebase!");
+
+
+go("explorar");
+
+};
+
+
+/* ME GUSTA */
+
+window.like = async function(id){
+
+const story = stories.find(s => s.id === id);
+
+if(!story) return;
+
+
+await update(
+ref(db,"stories/"+id),
+{
+likes:(story.likes || 0) + 1
+}
+);
+
+toast("❤️ Me gusta agregado");
+
+};
+
+
+/* COMENTARIO */
+
+window.comment = async function(id){
+
+const x = prompt("Escribe tu comentario:");
+
+if(!x || !x.trim()) return;
+
+
+const story = stories.find(s => s.id === id);
+
+if(!story) return;
+
+
+await update(
+ref(db,"stories/"+id),
+{
+comments:(story.comments || 0) + 1
+}
+);
+
+toast("💬 Comentario agregado");
+
+};
+
+
+/* BORRAR */
+
+window.deleteStory = async function(id){
+
+const story = stories.find(s => s.id === id);
+
+if(!story) return;
+
+
+/*
+Solo mostramos el botón al creador
+de esa historia.
+*/
+
+if(!currentUser || story.uid !== currentUser.uid){
+
+alert("No tienes permiso para borrar esta historia.");
+
+return;
+
+}
+
+
+if(!confirm("¿Seguro que quieres borrar esta historia?"))
+
+return;
+
+
+await remove(ref(db,"stories/"+id));
+
+toast("Historia eliminada");
+
+};
+
+
+/* COMPARTIR */
+
+window.share = function(id){
+
+navigator.clipboard?.writeText(
+location.href + "#historia-" + id
+);
+
+toast("Enlace copiado");
+
+};
+
+
+/* ORDENAR */
+
+window.sortStories = function(){
+
+stories.sort(
+(a,b) => (b.likes || 0) - (a.likes || 0)
+);
+
+render();
+
+};
+
+
+/* LOGIN */
+
+window.login = function(){
+
+toast("Conectado de forma anónima");
+
+};
+
+
+/* NAVEGACIÓN */
+
+window.go = function(id){
+
+document
+.getElementById(id)
+.scrollIntoView({
+behavior:"smooth"
+});
+
+};
+
+
+/* MENSAJE */
+
+function toast(t){
+
+let x =
+document.getElementById("toast");
+
+x.textContent=t;
+
+x.style.display="block";
+
+setTimeout(
+() => x.style.display="none",
+2200
+);
+
+}
+
+
+/* SEGURIDAD DEL TEXTO */
+
+function esc(x){
+
+return String(x).replace(
+/[&<>"']/g,
+
+m => ({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[m])
+
+);
+
+}
+
+</script>
+
+</body>
+  </html>
