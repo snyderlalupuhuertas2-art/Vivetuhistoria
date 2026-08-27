@@ -1,0 +1,700 @@
+/* ==========================================
+   VYRO
+   JAVASCRIPT PRINCIPAL
+   ========================================== */
+
+let publicacionesGuardadas =
+  JSON.parse(localStorage.getItem("vyro_guardados")) || [];
+
+let publicacionesUsuario =
+  JSON.parse(localStorage.getItem("vyro_publicaciones")) || 12;
+
+
+/* ==========================================
+   NAVEGACIÓN
+   ========================================== */
+
+function irA(id) {
+
+  document.querySelectorAll(".seccion")
+    .forEach(seccion => {
+      seccion.classList.remove("activa");
+    });
+
+  const destino = document.getElementById(id);
+
+  if (destino) {
+    destino.classList.add("activa");
+  }
+
+  document.querySelectorAll(".nav-item")
+    .forEach(item => {
+
+      item.classList.remove("activo");
+
+      if (item.dataset.seccion === id) {
+        item.classList.add("activo");
+      }
+
+    });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+/* ==========================================
+   MENSAJES EMERGENTES
+   ========================================== */
+
+let toastTimer;
+
+function mostrarToast(texto) {
+
+  const toast = document.getElementById("toast");
+  const textoToast = document.getElementById("toast-text");
+
+  textoToast.textContent = texto;
+
+  toast.classList.add("visible");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+
+    toast.classList.remove("visible");
+
+  }, 2500);
+}
+
+
+/* ==========================================
+   LIKES
+   ========================================== */
+
+function darLike(boton) {
+
+  boton.classList.toggle("like-activo");
+
+  if (boton.classList.contains("like-activo")) {
+
+    boton.innerHTML = "♥ <span>Te gusta</span>";
+
+    mostrarToast("❤️ Añadido a tus Me gusta");
+
+  } else {
+
+    boton.innerHTML = "♡ <span>Me gusta</span>";
+
+    mostrarToast("Quitado de Me gusta");
+
+  }
+}
+
+
+/* ==========================================
+   COMENTARIOS
+   ========================================== */
+
+function abrirComentarios(boton) {
+
+  const post = boton.closest(".post");
+
+  const comentarios =
+    post.querySelector(".comentarios");
+
+  comentarios.classList.toggle("oculto");
+
+}
+
+function enviarComentario(boton) {
+
+  const contenedor =
+    boton.closest(".escribir-comentario");
+
+  const input =
+    contenedor.querySelector("input");
+
+  const texto =
+    input.value.trim();
+
+  if (!texto) {
+
+    mostrarToast("Escribe algo primero.");
+
+    return;
+  }
+
+  const comentarios =
+    boton.closest(".comentarios");
+
+  const nuevo =
+    document.createElement("div");
+
+  nuevo.className = "comentario";
+
+  nuevo.innerHTML = `
+    <div class="avatar mini">S</div>
+
+    <div>
+      <strong>Snyder</strong>
+      <p>${escaparHTML(texto)}</p>
+    </div>
+  `;
+
+  comentarios.insertBefore(
+    nuevo,
+    contenedor
+  );
+
+  input.value = "";
+
+  mostrarToast("💬 Comentario publicado");
+}
+
+
+/* ==========================================
+   GUARDAR
+   ========================================== */
+
+function guardar(boton) {
+
+  const post =
+    boton.closest(".post");
+
+  const texto =
+    post.querySelector(".post-text")?.textContent.trim() ||
+    "Publicación de VYRO";
+
+  boton.classList.toggle("guardado");
+
+  if (boton.classList.contains("guardado")) {
+
+    publicacionesGuardadas.push(texto);
+
+    boton.textContent = "★";
+
+    mostrarToast("⭐ Publicación guardada");
+
+  } else {
+
+    publicacionesGuardadas =
+      publicacionesGuardadas.filter(
+        item => item !== texto
+      );
+
+    boton.textContent = "☆";
+
+    mostrarToast("Publicación eliminada de guardados");
+  }
+
+  localStorage.setItem(
+    "vyro_guardados",
+    JSON.stringify(publicacionesGuardadas)
+  );
+
+  actualizarGuardados();
+}
+
+
+function actualizarGuardados() {
+
+  const lista =
+    document.getElementById("guardados-lista");
+
+  if (!lista) return;
+
+  if (publicacionesGuardadas.length === 0) {
+
+    lista.innerHTML = `
+      <div>☆</div>
+      <h2>Aún no tienes publicaciones guardadas</h2>
+      <p>Cuando guardes una publicación aparecerá aquí.</p>
+    `;
+
+    return;
+  }
+
+  lista.innerHTML =
+    publicacionesGuardadas
+      .map(texto => `
+        <div class="post" style="text-align:left;">
+          <strong>Snyder guardó:</strong>
+          <p class="post-text">
+            ${escaparHTML(texto)}
+          </p>
+        </div>
+      `)
+      .join("");
+}
+
+
+/* ==========================================
+   COMPARTIR
+   ========================================== */
+
+async function compartir() {
+
+  const url = window.location.href;
+
+  if (navigator.share) {
+
+    try {
+
+      await navigator.share({
+        title: "VYRO",
+        text: "Mira esto en VYRO",
+        url: url
+      });
+
+    } catch (error) {
+
+      console.log("Compartir cancelado");
+
+    }
+
+  } else {
+
+    try {
+
+      await navigator.clipboard.writeText(url);
+
+      mostrarToast("🔗 Enlace copiado");
+
+    } catch {
+
+      mostrarToast("Copia el enlace de la página.");
+
+    }
+
+  }
+}
+
+
+/* ==========================================
+   SEGUIR
+   ========================================== */
+
+function seguir(boton) {
+
+  if (boton.textContent.trim() === "Seguir") {
+
+    boton.textContent = "Siguiendo";
+
+    boton.style.background = "#7c3aed";
+    boton.style.color = "white";
+
+    mostrarToast("👥 Ahora sigues a esta persona");
+
+  } else {
+
+    boton.textContent = "Seguir";
+
+    boton.style.background = "transparent";
+    boton.style.color = "#c4b5fd";
+
+    mostrarToast("Dejaste de seguir");
+
+  }
+}
+
+
+/* ==========================================
+   BUSCADOR
+   ========================================== */
+
+function buscar() {
+
+  const texto =
+    document
+      .getElementById("busqueda")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const posts =
+    document.querySelectorAll(".post");
+
+  posts.forEach(post => {
+
+    const contenido =
+      post.innerText.toLowerCase();
+
+    if (contenido.includes(texto)) {
+
+      post.style.display = "";
+
+    } else {
+
+      post.style.display = "none";
+
+    }
+
+  });
+
+  if (texto.length > 0) {
+
+    irA("inicio");
+
+  }
+
+}
+
+
+/* ==========================================
+   PUBLICADOR
+   ========================================== */
+
+function abrirPublicador() {
+
+  document
+    .getElementById("modal-publicar")
+    .classList.remove("oculto");
+
+  setTimeout(() => {
+
+    document
+      .getElementById("nuevo-texto")
+      .focus();
+
+  }, 100);
+
+}
+
+function cerrarModal(id) {
+
+  document
+    .getElementById(id)
+    .classList.add("oculto");
+
+}
+
+
+function publicar() {
+
+  const textarea =
+    document.getElementById("nuevo-texto");
+
+  const texto =
+    textarea.value.trim();
+
+  if (!texto) {
+
+    mostrarToast("Escribe algo antes de publicar.");
+
+    return;
+  }
+
+  const feed =
+    document.getElementById("feed");
+
+  const post =
+    document.createElement("article");
+
+  post.className = "post";
+
+  post.dataset.text = texto.toLowerCase();
+
+  post.innerHTML = `
+
+    <div class="post-header">
+
+      <div class="avatar">
+        S
+      </div>
+
+      <div class="post-user">
+
+        <strong>Snyder</strong>
+
+        <span>@snyder · ahora</span>
+
+      </div>
+
+      <button class="mas">
+        •••
+      </button>
+
+    </div>
+
+    <p class="post-text">
+      ${escaparHTML(texto)}
+    </p>
+
+    <div class="estadisticas">
+
+      <span>♡ 0</span>
+
+      <span>0 comentarios</span>
+
+    </div>
+
+    <div class="acciones-post">
+
+      <button onclick="darLike(this)">
+        ♡ <span>Me gusta</span>
+      </button>
+
+      <button onclick="abrirComentarios(this)">
+        ◯ <span>Comentar</span>
+      </button>
+
+      <button onclick="compartir()">
+        ↗ <span>Compartir</span>
+      </button>
+
+      <button onclick="guardar(this)">
+        ☆
+      </button>
+
+    </div>
+
+    <div class="comentarios oculto">
+
+      <div class="escribir-comentario">
+
+        <input placeholder="Escribe un comentario...">
+
+        <button onclick="enviarComentario(this)">
+          Enviar
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  feed.prepend(post);
+
+  textarea.value = "";
+
+  publicacionesUsuario++;
+
+  localStorage.setItem(
+    "vyro_publicaciones",
+    publicacionesUsuario
+  );
+
+  document.getElementById(
+    "publicaciones"
+  ).textContent = publicacionesUsuario;
+
+  cerrarModal("modal-publicar");
+
+  mostrarToast("🚀 ¡Publicación creada!");
+
+  irA("inicio");
+}
+
+
+/* ==========================================
+   HISTORIAS
+   ========================================== */
+
+function crearHistoria() {
+
+  mostrarToast(
+    "📸 Las historias estarán disponibles próximamente."
+  );
+
+}
+
+
+/* ==========================================
+   NOTIFICACIONES
+   ========================================== */
+
+function mostrarNotificaciones() {
+
+  irA("notificaciones");
+
+  const contador =
+    document.getElementById(
+      "contador-notificaciones"
+    );
+
+  contador.style.display = "none";
+
+}
+
+
+/* ==========================================
+   MENSAJES
+   ========================================== */
+
+function mostrarMensajes() {
+
+  irA("mensajes");
+
+}
+
+function enviarMensaje() {
+
+  const input =
+    document.getElementById("mensaje-input");
+
+  const texto =
+    input.value.trim();
+
+  if (!texto) return;
+
+  const mensajes =
+    document.querySelector(".mensajes");
+
+  const nuevo =
+    document.createElement("div");
+
+  nuevo.className =
+    "mensaje enviado";
+
+  nuevo.textContent = texto;
+
+  mensajes.appendChild(nuevo);
+
+  input.value = "";
+
+  mensajes.scrollTop =
+    mensajes.scrollHeight;
+
+}
+
+function teclaMensaje(event) {
+
+  if (event.key === "Enter") {
+
+    enviarMensaje();
+
+  }
+
+}
+
+
+/* ==========================================
+   PERFIL
+   ========================================== */
+
+function editarPerfil() {
+
+  const nombre =
+    prompt(
+      "¿Cuál quieres que sea tu nombre?",
+      "Snyder"
+    );
+
+  if (!nombre) return;
+
+  const nombreLimpio =
+    nombre.trim();
+
+  if (!nombreLimpio) return;
+
+  document.getElementById(
+    "perfil-nombre"
+  ).textContent = nombreLimpio;
+
+  document.getElementById(
+    "nombre-mini"
+  ).textContent = nombreLimpio;
+
+  mostrarToast("✓ Perfil actualizado");
+
+}
+
+
+/* ==========================================
+   CONFIGURACIÓN
+   ========================================== */
+
+function mostrarConfiguracion() {
+
+  const opcion =
+    confirm(
+      "VYRO\n\n¿Quieres activar el modo oscuro?"
+    );
+
+  if (opcion) {
+
+    document.body.classList.toggle("modo-extra");
+
+    mostrarToast("⚙️ Configuración actualizada");
+
+  }
+
+}
+
+
+/* ==========================================
+   FUNCIONES SIMULADAS
+   ========================================== */
+
+function agregarFoto() {
+
+  mostrarToast(
+    "🖼️ La carga de imágenes se conectará con Firebase."
+  );
+
+}
+
+function agregarVideo() {
+
+  mostrarToast(
+    "🎬 La carga de videos se conectará con Firebase."
+  );
+
+}
+
+function agregarEmoji() {
+
+  const textarea =
+    document.getElementById("nuevo-texto");
+
+  textarea.value += " 😊";
+
+  textarea.focus();
+
+}
+
+
+/* ==========================================
+   UTILIDADES
+   ========================================== */
+
+function escaparHTML(texto) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = texto;
+
+  return div.innerHTML;
+
+}
+
+
+/* ==========================================
+   INICIO
+   ========================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    actualizarGuardados();
+
+    const publicaciones =
+      localStorage.getItem(
+        "vyro_publicaciones"
+      );
+
+    if (publicaciones) {
+
+      document.getElementById(
+        "publicaciones"
+      ).textContent = publicaciones;
+
+    }
+
+  }
+);
