@@ -1,0 +1,59 @@
+# VYRO
+
+VYRO es una plataforma social web moderna.
+
+## Funciones
+
+- Feed de publicaciones
+- Publicar contenido
+- Me gusta
+- Comentarios
+- Compartir
+- Guardar publicaciones
+- Historias
+- Buscador
+- Tendencias
+- Notificaciones
+- Mensajes
+- Perfil
+- Seguidores
+- Diseño responsive
+- Compatible con celulares
+- Compatible con GitHub Pages
+
+## Publicar en GitHub Pages
+
+1. Crear un repositorio en GitHub.
+2. Subir:
+   - index.html
+   - style.css
+   - app.js
+   - README.md
+3. Entrar en Settings.
+4. Entrar en Pages.
+5. Seleccionar `Deploy from a branch`.
+6. Seleccionar `main`.
+7. Seleccionar `/ (root)`.
+8. Guardar.
+
+Después de unos minutos GitHub Pages publicará VYRO.
+
+## Próxima versión
+
+La siguiente versión puede conectar:
+
+- Firebase Authentication
+- Firebase Firestore
+- Firebase Storage
+- Usuarios reales
+- Registro
+- Inicio de sesión
+- Perfiles reales
+- Publicaciones almacenadas en la nube
+- Imágenes reales
+- Videos
+- Comentarios en tiempo real
+- Likes reales
+- Seguidores
+- Mensajería
+- Notificaciones
